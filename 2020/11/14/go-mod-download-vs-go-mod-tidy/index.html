@@ -20,23 +20,25 @@
     <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
     
     <meta name="description" content="">
-    <meta name="description" content="hexo全局配置 _config.yml配置文件  1234567highlight:  enable: true  line_number: true  auto_detect: false  tab_replace: &amp;#x27;    &amp;#x27; # 将tab替换为对应字符串  wrap: true  hljs: false    hexo 文章引用图片链接：https:&#x2F;&#x2F;fuhaili">
+    <meta name="description" content="起因 工作中，一次很普通的feature分支合入主分支的操作，出现了go.mod文件冲突，然后正常处理完之后，执行了一次go mod tidy命令，确保go.mod文件中的内容是没问题； 但是奇怪的时候，tidy命令报错了，具体错误如下(用星号隐藏了敏感信息，不影响分析)，显示某个package找不到；  123456789go: finding module for package github">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hexo 主题相关">
-<meta property="og:url" content="https://hawayiii.github.io/2020/11/08/hexo-themes/index.html">
+<meta property="og:title" content="f**k go modules 之 go mod download vs go mod tidy">
+<meta property="og:url" content="https://hawayiii.github.io/2020/11/14/go-mod-download-vs-go-mod-tidy/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="hexo全局配置 _config.yml配置文件  1234567highlight:  enable: true  line_number: true  auto_detect: false  tab_replace: &amp;#x27;    &amp;#x27; # 将tab替换为对应字符串  wrap: true  hljs: false    hexo 文章引用图片链接：https:&#x2F;&#x2F;fuhaili">
+<meta property="og:description" content="起因 工作中，一次很普通的feature分支合入主分支的操作，出现了go.mod文件冲突，然后正常处理完之后，执行了一次go mod tidy命令，确保go.mod文件中的内容是没问题； 但是奇怪的时候，tidy命令报错了，具体错误如下(用星号隐藏了敏感信息，不影响分析)，显示某个package找不到；  123456789go: finding module for package github">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://hawayiii.github.io/2020/11/08/hexo-themes/image-20201108235826558.png">
-<meta property="article:published_time" content="2020-11-08T13:55:24.000Z">
-<meta property="article:modified_time" content="2020-11-09T15:22:33.351Z">
+<meta property="og:image" content="https://hawayiii.github.io/2020/11/14/go-mod-download-vs-go-mod-tidy/find_aes.png">
+<meta property="og:image" content="https://hawayiii.github.io/2020/11/14/go-mod-download-vs-go-mod-tidy/go-chassis-foundation.png">
+<meta property="article:published_time" content="2020-11-14T04:12:39.000Z">
+<meta property="article:modified_time" content="2020-11-14T08:50:15.653Z">
 <meta property="article:author" content="simida">
+<meta property="article:tag" content="modules">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://hawayiii.github.io/2020/11/08/hexo-themes/image-20201108235826558.png">
+<meta name="twitter:image" content="https://hawayiii.github.io/2020/11/14/go-mod-download-vs-go-mod-tidy/find_aes.png">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     
-    <title>hexo 主题相关 · simida&#39;s Studio</title>
+    <title>f**k go modules 之 go mod download vs go mod tidy · simida&#39;s Studio</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -231,7 +233,7 @@
                 <a href="/" >simida&#39;s Studio.</a>
             </div>
             <div class="post-title">
-                <a href="#" class="post-name">hexo 主题相关</a>
+                <a href="#" class="post-name">f**k go modules 之 go mod download vs go mod tidy</a>
             </div>
     </div>
     
@@ -261,7 +263,7 @@ height:50vh;
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            hexo 主题相关
+            f**k go modules 之 go mod download vs go mod tidy
             <!-- 404 -->
             
         </h1>
@@ -278,14 +280,20 @@ height:50vh;
             <div class="post-intros">
                 <!-- 文章页标签  -->
                 
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "modules">modules</a>
+    
+</div>
+                
                 
                     <div class="post-intro-read">
-                        <span>Word count: <span class="post-count word-count">315</span>Reading time: <span class="post-count reading-time">1 min</span></span>
+                        <span>Word count: <span class="post-count word-count">1.3k</span>Reading time: <span class="post-count reading-time">5 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
                     <span class="post-intro-calander iconfont-archer">&#xe676;</span>
-                    <span class="post-intro-time">2020/11/08</span>
+                    <span class="post-intro-time">2020/11/14</span>
                     
                     <span id="busuanzi_container_page_pv" class="busuanzi-pv">
                         <span class="iconfont-archer">&#xe602;</span>
@@ -409,46 +417,75 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <h1 id="hexo全局配置"><a href="#hexo全局配置" class="headerlink" title="hexo全局配置"></a>hexo全局配置</h1><ul>
-<li>_config.yml配置文件</li>
+        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><ul>
+<li>工作中，一次很普通的feature分支合入主分支的操作，出现了go.mod文件冲突，然后正常处理完之后，执行了一次go mod tidy命令，确保go.mod文件中的内容是没问题；</li>
+<li>但是奇怪的时候，tidy命令报错了，具体错误如下(用星号隐藏了敏感信息，不影响分析)，显示某个package找不到；</li>
 </ul>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">highlight:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">line_number:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">auto_detect:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">tab_replace:</span> <span class="string">&#x27;    &#x27;</span> <span class="comment"># 将tab替换为对应字符串</span></span><br><span class="line">  <span class="attr">wrap:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">hljs:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">go: finding module for package github.com/go-chassis/go-chassis/security/plugins/aes</span><br><span class="line">git.xx.com/*******************************************/awb imports</span><br><span class="line">        git.xx.com/************************/chassis imports</span><br><span class="line">        github.com/go-chassis/go-chassis imports</span><br><span class="line">        github.com/go-chassis/go-archaius/source/remote/kie imports</span><br><span class="line">        github.com/go-chassis/go-archaius/pkg/kieclient imports</span><br><span class="line">        github.com/go-chassis/foundation/httpclient tested by</span><br><span class="line">        github.com/go-chassis/foundation/httpclient.test imports</span><br><span class="line">        github.com/go-chassis/go-chassis/security/plugins/aes: module github.com/go-chassis/go-chassis@latest found (v1.8.3, replaced by github.com/go-chassis/go-chassis@v0.0.0-20200604060606-ba2932cb3029), but does not contain package github.com/go-chassis/go-chassis/security/plugins/aes</span><br></pre></td></tr></table></figure>
 
-
-
-<h1 id="hexo-文章引用图片"><a href="#hexo-文章引用图片" class="headerlink" title="hexo 文章引用图片"></a>hexo 文章引用图片</h1><p>链接：<a target="_blank" rel="noopener" href="https://fuhailin.github.io/Hexo-images/">https://fuhailin.github.io/Hexo-images/</a></p>
-<h1 id="archer主题自定义"><a href="#archer主题自定义" class="headerlink" title="archer主题自定义"></a>archer主题自定义</h1><ul>
-<li>config.yml配置文件；</li>
-<li>页面布局：在layout文件夹下的.ejs文件中；</li>
-<li>样式自定义：”_variable.scss” 和 “ _post-page.scss”</li>
+<ul>
+<li>当时就纳闷了:tired_face: ，这个服务是能部署成功的，为啥到我这里就有问题了；就这样开始我的问题定位之旅；</li>
 </ul>
-<h1 id="archer-二次开发问题记录"><a href="#archer-二次开发问题记录" class="headerlink" title="archer 二次开发问题记录"></a>archer 二次开发问题记录</h1><h2 id="npm-install-问题处理"><a href="#npm-install-问题处理" class="headerlink" title="npm install 问题处理"></a>npm install 问题处理</h2><ul>
-<li><p><strong>错误1</strong>：Tried to download(404): <a target="_blank" rel="noopener" href="https://fsevents-binaries.s3-us-west-2.amazonaws.com/v1.2.4/fse-v1.2.4-node-v67-darwin-x64.tar.gz">https://fsevents-binaries.s3-us-west-2.amazonaws.com/v1.2.4/fse-v1.2.4-node-v67-darwin-x64.tar.gz</a></p>
-</li>
-<li><p>解决方法：删除package-lock.json，然后重新安装；</p>
-</li>
+<h1 id="问题初定位"><a href="#问题初定位" class="headerlink" title="问题初定位"></a>问题初定位</h1><ul>
+<li>从错误信息可以明确看出来，go-chassis的<strong>security/plugins/aes</strong>包找不到；</li>
 </ul>
-<h2 id="npm-run-build-问题处理"><a href="#npm-run-build-问题处理" class="headerlink" title="npm run build 问题处理"></a>npm run build 问题处理</h2><ul>
-<li><p><strong>错误1</strong>：ReferenceError: primordials is not defined in node</p>
-</li>
-<li><p>链接：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/55921442/how-to-fix-referenceerror-primordials-is-not-defined-in-node">https://stackoverflow.com/questions/55921442/how-to-fix-referenceerror-primordials-is-not-defined-in-node</a></p>
-</li>
+<ul>
+<li>go-chassis引用的版本是<strong>v0.0.0-20200604060606-ba2932cb3029</strong>，到github上查找到对应commitid的代码，确实没有这个security/plugins/aes这个包，如下图所示，就连plugins目录都不存在；</li>
 </ul>
-<img src="image-20201108235826558.png" width="50%" height="50%" title="" alt=""/>
-
-<br>
+<img src="find_aes.png" width="50%" height="50%" title="" alt=""/>
 
 <br>
 
 <ul>
-<li><p><strong>错误2</strong>：BABEL .default is not a valid Plugin property at Object.keys.forEach.key</p>
-</li>
-<li><p>修改webpack.config.js文件中的plugins模块；然后再执行npm run build</p>
-</li>
+<li>这就很迷惑了，程序一直都能部署，在线上跑得好好的，为啥突然出现这种情况；</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  entry: &#123;</span><br><span class="line">    main: <span class="string">&#x27;./src/js/main.js&#x27;</span>,</span><br><span class="line">    share: <span class="string">&#x27;./src/js/share.js&#x27;</span>,</span><br><span class="line">    search: <span class="string">&#x27;./src/js/search.js&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.join(__dirname, <span class="string">&#x27;./source/scripts&#x27;</span>),</span><br><span class="line">    filename: <span class="string">&#x27;[name].js&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  devtool: <span class="string">&#x27;none&#x27;</span>,</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [&#123;</span><br><span class="line">      test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">      exclude: <span class="regexp">/node_modules/</span>,</span><br><span class="line">      use: &#123;</span><br><span class="line">        loader: <span class="string">&#x27;babel-loader&#x27;</span>,</span><br><span class="line">        options: &#123;</span><br><span class="line">          presets: [<span class="string">&#x27;@babel/preset-env&#x27;</span>],</span><br><span class="line">          plugins: [</span><br><span class="line">            <span class="string">&#x27;@babel/plugin-proposal-class-properties&#x27;</span>, &#123;&#125;,</span><br><span class="line">            <span class="string">&#x27;@babel/plugin-proposal-object-rest-spread&#x27;</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>我也找了同事在他的电脑上跑一下<strong>go mod tidy</strong>命令，同样出现这个问题；</li>
+</ul>
+<ul>
+<li>这个时候同事执行了一次<strong>go mod download</strong>，然后竟然成功了；我当时就更懵了，为啥download命令能成功啊；难道这两个命令存在一些不同的行为？</li>
+</ul>
+<ul>
+<li>我再次看了一下错误信息，找一下到底是哪里引用了security/plugins/aes包；看一下为什么download命令检测不出来；</li>
+<li>发现是<strong>github.com/go-chassis/foundation/httpclient</strong>包调用的，然后我就顺藤摸瓜找到了调用的地方，如下图所示；</li>
+</ul>
+<img src="go-chassis-foundation.png" width="50%" height="50%" title="" alt=""/>
 
+<br>
 
+<ul>
+<li>可以发现是在一个单元测试文件上引用的，这时候就大概猜到了，可能download命令是不会搜索<strong>单测文件</strong>的，接下来就需要验证这个问题了；</li>
+</ul>
+<ul>
+<li>先回到工作中，因为download命令是没问题的，也就是说go.mod文件也能正常被处理，所以先赶紧提交代码和部署程序吧(有惊无险:joy:)；</li>
+</ul>
+<h1 id="彻查download和tidy命令"><a href="#彻查download和tidy命令" class="headerlink" title="彻查download和tidy命令"></a>彻查download和tidy命令</h1><p>先来看一下go mod tidy的官方描述: <a target="_blank" rel="noopener" href="https://golang.org/ref/mod#go-mod-tidy">https://golang.org/ref/mod#go-mod-tidy</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">go mod tidy works by loading all of the packages in the main module and all of the packages </span><br><span class="line">they import, recursively. This includes packages imported by tests (including tests in </span><br><span class="line">other modules). </span><br><span class="line"></span><br><span class="line">go mod tidy acts as if all build tags are enabled, so it will consider </span><br><span class="line">platform-specific source files and files that require custom build tags, even if those source </span><br><span class="line">files wouldn&#39;t normally be built. </span><br><span class="line"></span><br><span class="line">There is one exception: the ignore build tag is not enabled, so a file with the build </span><br><span class="line">constraint &#x2F;&#x2F; +build ignore will not be considered. Note that go mod tidy will not consider </span><br><span class="line">packages in the main module in directories named testdata or with names that </span><br><span class="line">start with . or _ unless those packages are explicitly imported by other packages.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可以看到tidy命令会递归遍历所有引用到的package，包括单元测试引入的包；然后根据需要添加和删除package；</li>
+<li>这就能解析为什么go mod tidy命令会报错；</li>
+</ul>
+<br>
+
+<p>接下来再看一下download命令的官方描述，看是否有相应提示: <a target="_blank" rel="noopener" href="https://golang.org/ref/mod#go-mod-download">https://golang.org/ref/mod#go-mod-download</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Download downloads the named modules, which can be module patterns selecting dependencies </span><br><span class="line">of the main module or module queries of the form path@version. With no arguments, download </span><br><span class="line">applies to all dependencies of the main module (equivalent to &#39;go mod download all&#39;).</span><br><span class="line"></span><br><span class="line">The go command will automatically download modules as needed during ordinary execution. </span><br><span class="line">The &quot;go mod download&quot; command is useful mainly for pre-filling the local cache or to </span><br><span class="line">compute the answers for a Go module proxy.</span><br><span class="line"></span><br><span class="line">By default, download writes nothing to standard output. It may print progress messages </span><br><span class="line">and errors to standard error.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可以看到第一段描述中提到<strong>main module</strong>；但是你没有更详细的描述了；</li>
+</ul>
+<br>
+
+<p>但是在cmd/go的文档中找到了这样的描述: <a target="_blank" rel="noopener" href="https://golang.org/cmd/go/#hdr-Maintaining_module_requirements">https://golang.org/cmd/go/#hdr-Maintaining_module_requirements</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Any go command can determine that a module requirement is missing and must be added, even </span><br><span class="line">when considering only a single package from the module. </span><br><span class="line"></span><br><span class="line">On the other hand, determining that a module requirement is no longer necessary and can be </span><br><span class="line">deleted requires a full view of all packages in the module, across all possible build configurations (architectures, operating systems, build tags, and so on). </span><br><span class="line"></span><br><span class="line">The &#39;go mod tidy&#39; command builds that view and then adds any missing module requirements and removes unnecessary ones.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可以看出只有go mod tidy命令才能获取更多相关信息来判断某个package能否被删除；</li>
+<li>而其它命令只能判断某个package是否被依赖，以及将其添加到go.mod文件；</li>
+</ul>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>从以上官方文档可以得出：go build, go test, go mod download等命令只能判断package是否被代码依赖，以及将其添加到go.mod文件当中；</p>
+<p><strong>go mod tidy</strong>命令则做了很多工作，递归遍历所有依赖的package，从而判断哪些package是不需要的，再从go.mod文件中删除；因此download命令检测不到的错误，在tidy命令中就会出现；</p>
+<p>因此要注意的是，项目每次提交前要执行一次go mod tidy，保证go.mod正确和干净；</p>
 
     </article>
     <!-- license  -->
@@ -459,9 +496,9 @@ height:50vh;
     
         <div class="license-wrapper">
             <p>Author：<a href="https://hawayiii.github.io">simida</a>
-            <p>原文链接：<a href="https://hawayiii.github.io/2020/11/08/hexo-themes/">https://hawayiii.github.io/2020/11/08/hexo-themes/</a>
-            <p>发表日期：<a href="https://hawayiii.github.io/2020/11/08/hexo-themes/">November 8th 2020, 9:55:24 pm</a>
-            <p>更新日期：<a href="https://hawayiii.github.io/2020/11/08/hexo-themes/">November 9th 2020, 11:22:33 pm</a>
+            <p>原文链接：<a href="https://hawayiii.github.io/2020/11/14/go-mod-download-vs-go-mod-tidy/">https://hawayiii.github.io/2020/11/14/go-mod-download-vs-go-mod-tidy/</a>
+            <p>发表日期：<a href="https://hawayiii.github.io/2020/11/14/go-mod-download-vs-go-mod-tidy/">November 14th 2020, 12:12:39 pm</a>
+            <p>更新日期：<a href="https://hawayiii.github.io/2020/11/14/go-mod-download-vs-go-mod-tidy/">November 14th 2020, 4:50:15 pm</a>
             <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -470,17 +507,12 @@ height:50vh;
         <li class="previous">
             
                 <div class="prevSlogan">Previous Post</div>
-                <a href= "/2020/11/08/slice/" title= "深入了解slice和数组">
-                    <div class="prevTitle">深入了解slice和数组</div>
+                <a href= "/2020/11/08/hexo-themes/" title= "hexo 主题相关">
+                    <div class="prevTitle">hexo 主题相关</div>
                 </a>
             
         </li>
         <li class="next">
-            
-                <div class="nextSlogan">Next Post</div>
-                <a href= "/2020/11/14/go-mod-download-vs-go-mod-tidy/" title= "f**k go modules 之 go mod download vs go mod tidy">
-                    <div class="nextTitle">f**k go modules 之 go mod download vs go mod tidy</div>
-                </a>
             
         </li>
     </ul>
@@ -602,7 +634,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#hexo%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE"><span class="toc-number">1.</span> <span class="toc-text">hexo全局配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#hexo-%E6%96%87%E7%AB%A0%E5%BC%95%E7%94%A8%E5%9B%BE%E7%89%87"><span class="toc-number">2.</span> <span class="toc-text">hexo 文章引用图片</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#archer%E4%B8%BB%E9%A2%98%E8%87%AA%E5%AE%9A%E4%B9%89"><span class="toc-number">3.</span> <span class="toc-text">archer主题自定义</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#archer-%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95"><span class="toc-number">4.</span> <span class="toc-text">archer 二次开发问题记录</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#npm-install-%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86"><span class="toc-number">4.1.</span> <span class="toc-text">npm install 问题处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#npm-run-build-%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86"><span class="toc-number">4.2.</span> <span class="toc-text">npm run build 问题处理</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B5%B7%E5%9B%A0"><span class="toc-number">1.</span> <span class="toc-text">起因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E5%88%9D%E5%AE%9A%E4%BD%8D"><span class="toc-number">2.</span> <span class="toc-text">问题初定位</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BD%BB%E6%9F%A5download%E5%92%8Ctidy%E5%91%BD%E4%BB%A4"><span class="toc-number">3.</span> <span class="toc-text">彻查download和tidy命令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA"><span class="toc-number">4.</span> <span class="toc-text">结论</span></a></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
