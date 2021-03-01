@@ -354,6 +354,48 @@
     
     
     <article class="index-post">
+        <a class="abstract-title" href = "/2021/03/01/go%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-map/" >
+            
+                <span>go源码分析 - map</span>
+        </a>
+        <div class="abstract-content">
+            写在前面1 map内部结构
+先看一下map内部数据结构，有个大体的印象：
+
+
+
+
+
+可以看出来map对应的数据结构是hmap，指向一堆桶(buckets)用于保存数据，每个桶(bmap)能保存8组k/v；而oldbuckets则用于保存迁移过程中的旧数据；
+其中bmap的tophash保存key的hash值，用户快速查找key；keys对应保存key，elems对应保存value；overflow则是用于保存溢出的数据；
+hmap中的extra则是为了防止overflow数据被gc释放掉，后续再详细解析；
+
+具体数据结构详细注释如下：
+
+1234567891011121314151617...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/03/01</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "map">map</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
         <a class="abstract-title" href = "/2020/11/14/go-mod-download-vs-go-mod-tidy/" >
             
                 <span>f**k go modules 之 go mod download vs go mod tidy</span>
@@ -572,9 +614,16 @@ go定义的数组包含两个属性，一个是数组长度，另一个是数组
     
     
     
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 4
+        Total : 5
         </div>
         <!-- search  -->
         
@@ -584,6 +633,20 @@ go定义的数组包含两个属性，一个是数组长度，另一个是数组
     
     
     
+    
+    <div class="archive-year"> 2021 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/01</span><a class="archive-post-title" href= "/2021/03/01/go%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-map/" >go源码分析 - map</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
     
     <div class="archive-year"> 2020 </div>
     <ul class="year-list">
@@ -616,6 +679,8 @@ go定义的数组包含两个属性，一个是数组长度，另一个是数组
         <span class="sidebar-tag-name" data-tags="slice"><span class="iconfont-archer">&#xe606;</span>slice</span>
     
         <span class="sidebar-tag-name" data-tags="modules"><span class="iconfont-archer">&#xe606;</span>modules</span>
+    
+        <span class="sidebar-tag-name" data-tags="map"><span class="iconfont-archer">&#xe606;</span>map</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>

@@ -22,7 +22,7 @@
     <meta name="description" content="">
     <meta property="og:type" content="website">
 <meta property="og:title" content="Hexo">
-<meta property="og:url" content="https://hawayiii.github.io/tags/slice/index.html">
+<meta property="og:url" content="https://hawayiii.github.io/tags/map/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="simida">
@@ -354,32 +354,36 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/2020/11/08/slice/" >
+        <a class="abstract-title" href = "/2021/03/01/go%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-map/" >
             
-                <span>深入了解slice和数组</span>
+                <span>go源码分析 - map</span>
         </a>
         <div class="abstract-content">
-            [toc]
-数组
-go定义的数组包含两个属性，一个是数组长度，另一个是数组元素的类型；比如[4]int表示一个包含4个整形数的数组；
-
-数组的长度也是数组类型的一部分，比如[4]int和[5]int是不同的数组类型；
+            写在前面1 map内部结构
+先看一下map内部数据结构，有个大体的印象：
 
 
-内部实现
-数组的内存模型就是一串连续的内存空间；
-注意和c/c++中的数组含义不一样；go中的数组是值类型，这就代表赋值操作是值拷贝；123456789101112func testArray() &#123;    a := [3]int&#123;1,2,3&#125;    log.Printf(&quot;ptr:%p, value:%v&quot;, &amp...
+
+
+
+可以看出来map对应的数据结构是hmap，指向一堆桶(buckets)用于保存数据，每个桶(bmap)能保存8组k/v；而oldbuckets则用于保存迁移过程中的旧数据；
+其中bmap的tophash保存key的hash值，用户快速查找key；keys对应保存key，elems对应保存value；overflow则是用于保存溢出的数据；
+hmap中的extra则是为了防止overflow数据被gc释放掉，后续再详细解析；
+
+具体数据结构详细注释如下：
+
+1234567891011121314151617...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
             <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2020/11/08</span>
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/03/01</span>
             </div>
             <!-- tags  -->
             
             <div class= abstract-tags >
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "slice">slice</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "map">map</a>
     
 </div>
             
